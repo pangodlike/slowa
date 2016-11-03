@@ -43,7 +43,6 @@ class Sabot {
     let spelling = message.content.split(' ')[1];
     return this.dbAdapter.getWordCount(spelling).then(
       (res) => {
-        console.log(res)
         if (res === null) {
           message.channel.sendMessage(`Word "${spelling}" has never been spotted here...`);
         } else {
@@ -54,7 +53,7 @@ class Sabot {
 
   // When the bot arrives online
   handleReady() {
-    console.log('ready')
+    console.log('Sabot ready!')
     // Maybe say hello or something
   }
 
