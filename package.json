@@ -1,15 +1,21 @@
 {
   "name": "sabot",
   "version": "1.0.0",
-  "description": "",
+  "description": "Discord bot used to track single word usage on a server",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --recursive",
+    "test:watch": "mocha --recursive --watch"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "discord.js": "^10.0.1",
     "mongoose": "^4.6.5"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.1.2",
+    "sinon": "^1.17.6"
   }
 }
