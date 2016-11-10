@@ -8,7 +8,7 @@ let Word = mongoose.model('Word', {spelling: String, count: { type: Number, defa
 
 // The MongoDB adapter's config only needs an "url" field, which represents the DB server's location
 class MongoDBAdapter extends base {
-  connect(url) {
+  connect(config) {
     mongoose.connect(this.config.url);
     this.db = mongoose.connection;
     this.db.on('error', this.handleConnectionError);
