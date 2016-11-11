@@ -3,3 +3,4 @@
 *.DS_Store
 config.js
 todo.txt
+yarn.lock
