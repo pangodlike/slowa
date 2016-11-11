@@ -4,6 +4,7 @@
   "description": "Discord bot used to track single word usage on a server",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint **/*.js",
     "test": "mocha --recursive",
     "test:watch": "mocha --recursive --watch"
   },
@@ -15,6 +16,8 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "eslint": "^3.9.1",
+    "eslint-plugin-jasmine": "^2.1.0",
     "mocha": "^3.1.2",
     "sinon": "^1.17.6"
   }

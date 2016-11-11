@@ -1,4 +1,4 @@
-const discord = require('discord.js');
+const discord = require("discord.js");
 
 class Sabot {
   constructor(dbAdapter) {
@@ -7,8 +7,8 @@ class Sabot {
 
   login(token) {
     this.client = this.makeDiscordClient();
-    this.client.once('ready', () => {this.handleReady()});
-    this.client.on('message', (message) => {this.handleMessage(message)});
+    this.client.once("ready", () => {this.handleReady();});
+    this.client.on("message", (message) => {this.handleMessage(message);});
     this.client.login(token);
     this.dbAdapter.connect();
   }
@@ -40,7 +40,7 @@ class Sabot {
   }
 
   processWordCountCommand(message) {
-    let spelling = message.content.split(' ')[1];
+    let spelling = message.content.split(" ")[1];
     return this.dbAdapter.getWordCount(spelling).then(
       (res) => {
         if (res === null) {
@@ -48,12 +48,12 @@ class Sabot {
         } else {
           message.channel.sendMessage(`Word "${spelling}" has been spotted ${res.count} times here!`);
         }
-    });
+      });
   }
 
   // When the bot arrives online
   handleReady() {
-    console.log('Sabot ready!')
+    console.log("Sabot ready!");
     // Maybe say hello or something
   }
 
@@ -63,7 +63,7 @@ class Sabot {
     if (message.author.bot === true) {
       return;
     }
-    if (content.startsWith('!word_count')) {
+    if (content.startsWith("!word_count")) {
       this.processWordCountCommand(message);
     } else {
       this.processMessage(message);
