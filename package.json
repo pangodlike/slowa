@@ -1,14 +1,14 @@
 {
   "name": "sabot",
-  "version": "1.0.0",
-  "description": "Discord bot used to track single word usage on a server",
+  "version": "0.0.1",
+  "description": "A bot used to obtain statistics about the interactions on a Discord server",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint **/*.js",
+    "lint": "eslint *.js",
     "test": "mocha --recursive",
     "test:watch": "mocha --recursive --watch"
   },
-  "author": "",
+  "author": "ianfdk",
   "license": "ISC",
   "dependencies": {
     "discord.js": "^10.0.1",
