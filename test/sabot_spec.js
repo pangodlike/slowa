@@ -24,13 +24,17 @@ describe("Sabot", function() {
     sinon.stub(sabot, "makeDiscordClient").returns(discordClient);
   }
 
-  function makeMessage(content, isBot = false) {
+  function makeMessage(content, isBot = false, guildId = 1, channelId = 2) {
     return {
       author: {
         bot: isBot,
       },
       content: content,
       channel: {
+        guild: {
+          id: guildId,
+        },
+        id: channelId,
         sendMessage: sinon.spy(),
       },
     };
@@ -124,10 +128,10 @@ describe("Sabot", function() {
 
     it("should count words properly", function() {
       sabot.processMessage(makeMessage("word1, word2+word3  word1! word1_word1"));
-      assert(dbAdapter.incrementWord.calledWith("word1", 2));
-      assert(dbAdapter.incrementWord.calledWith("word1_word1", 1));
-      assert(dbAdapter.incrementWord.calledWith("word2", 1));
-      assert(dbAdapter.incrementWord.calledWith("word3", 1));
+      assert(dbAdapter.incrementWord.calledWith(1, 2, "word1", 2));
+      assert(dbAdapter.incrementWord.calledWith(1, 2, "word1_word1", 1));
+      assert(dbAdapter.incrementWord.calledWith(1, 2, "word2", 1));
+      assert(dbAdapter.incrementWord.calledWith(1, 2, "word3", 1));
       assert.equal(4, dbAdapter.incrementWord.callCount);
     });
   });
@@ -143,7 +147,16 @@ describe("Sabot", function() {
       let message = makeMessage("!word_count some_word");
       return sabot.processWordCountCommand(message).then(() => {
         assert(message.channel.sendMessage.calledOnce);
-        assert(message.channel.sendMessage.calledWith("Word \"some_word\" has been spotted 42 times here!"));
+        assert(message.channel.sendMessage.calledWith("Word \"some_word\" has been spotted 42 times on this channel!"));
+      });
+    });
+
+    it("should properly handle existing words server-wide", function() {
+      dbAdapter.getWordCount.returns(Promise.resolve({count: 42}));
+      let message = makeMessage("!word_count some_word -s");
+      return sabot.processWordCountCommand(message).then(() => {
+        assert(message.channel.sendMessage.calledOnce);
+        assert(message.channel.sendMessage.calledWith("Word \"some_word\" has been spotted 42 times on this server!"));
       });
     });
 
@@ -152,7 +165,16 @@ describe("Sabot", function() {
       let message = makeMessage("!word_count some_word");
       return sabot.processWordCountCommand(message).then(() => {
         assert(message.channel.sendMessage.calledOnce);
-        assert(message.channel.sendMessage.calledWith("Word \"some_word\" has never been spotted here..."));
+        assert(message.channel.sendMessage.calledWith("Word \"some_word\" has never been spotted on this channel..."));
+      });
+    });
+
+    it("should properly handle non existing words server-wide", function() {
+      dbAdapter.getWordCount.returns(Promise.resolve(null));
+      let message = makeMessage("!word_count some_word -s");
+      return sabot.processWordCountCommand(message).then(() => {
+        assert(message.channel.sendMessage.calledOnce);
+        assert(message.channel.sendMessage.calledWith("Word \"some_word\" has never been spotted on this server..."));
       });
     });
   });

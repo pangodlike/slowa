@@ -7,11 +7,11 @@ class BaseDBAdapter {
     console.error('The connect method should be defined by your DB adapter. DO NOT use BaseDBAdapter!');
   }
 
-  getWordCount(spelling) {
+  getWordCount(spelling, guildId, channelId = null) {
     console.error('The getWordCount method should be defined by your DB adapter. DO NOT use BaseDBAdapter!');
   }
 
-  incrementWord(spelling, count) {
+  incrementWord(guildId, channelId, spelling, count) {
     console.error('The incrementWord method should be defined by your DB adapter. DO NOT use BaseDBAdapter!');
   }
 }

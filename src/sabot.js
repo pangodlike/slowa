@@ -18,9 +18,8 @@ class Sabot {
   }
 
   processMessage(message) {
-    let content = message.content;
     // Split message's text into words
-    let words = content.split(/\s+\W+|\s+|\W+/);
+    let words = message.content.split(/\s+\W+|\s+|\W+/);
     // Count how many times each word appears
     let counter = {};
     words.forEach((word) => {
@@ -35,18 +34,22 @@ class Sabot {
     });
     // Increment every word's count in the DB
     for (let word in counter) {
-      this.dbAdapter.incrementWord(word, counter[word]);
+      this.dbAdapter.incrementWord(message.channel.guild.id, message.channel.id, word, counter[word]);
     }
   }
 
   processWordCountCommand(message) {
-    let spelling = message.content.split(" ")[1];
-    return this.dbAdapter.getWordCount(spelling).then(
+    let splitCommand = message.content.split(" ");
+    let spelling = splitCommand[1];
+    let serverWide = splitCommand.indexOf('-s') !== -1;
+    let channelId = serverWide ? null : message.channel.id;
+    let outputPostfix = serverWide ? 'on this server' : 'on this channel';
+    return this.dbAdapter.getWordCount(spelling, message.channel.guild.id, channelId).then(
       (res) => {
         if (res === null) {
-          message.channel.sendMessage(`Word "${spelling}" has never been spotted here...`);
+          message.channel.sendMessage(`Word "${spelling}" has never been spotted ${outputPostfix}...`);
         } else {
-          message.channel.sendMessage(`Word "${spelling}" has been spotted ${res.count} times here!`);
+          message.channel.sendMessage(`Word "${spelling}" has been spotted ${res.count} times ${outputPostfix}!`);
         }
       });
   }

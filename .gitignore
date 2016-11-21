@@ -2,5 +2,6 @@
 /node_modules
 *.DS_Store
 config.js
+npm-debug.log
 todo.txt
 yarn.lock
