@@ -1,14 +1,18 @@
-const discord = require("discord.js");
+const discord = require('discord.js');
 
 class Sabot {
   constructor(dbAdapter) {
     this.dbAdapter = dbAdapter;
   }
 
+  countMessage(message) {
+    this.dbAdapter.incrementMessageCount(message.channel.guild.id, message.channel.id);
+  }
+
   login(token) {
     this.client = this.makeDiscordClient();
-    this.client.once("ready", () => {this.handleReady();});
-    this.client.on("message", (message) => {this.handleMessage(message);});
+    this.client.once('ready', () => {this.handleReady();});
+    this.client.on('message', (message) => {this.handleMessage(message);});
     this.client.login(token);
     this.dbAdapter.connect();
   }
@@ -38,36 +42,50 @@ class Sabot {
     }
   }
 
+  processMessageCountCommand(message) {
+    let splitCommand = message.content.split(' ');
+    let serverWide = splitCommand.indexOf('-s') !== -1;
+    let channelId = serverWide ? null : message.channel.id;
+    let outputPostfix = serverWide ? 'server' : 'channel';
+    return this.dbAdapter.getMessageCount(message.channel.guild.id, channelId).then(
+      (res) => {
+        message.channel.sendMessage(`${res} messages have been sent on this ${outputPostfix}!`);
+      }, (err) => { return err; });
+  }
+
   processWordCountCommand(message) {
-    let splitCommand = message.content.split(" ");
+    let splitCommand = message.content.split(' ');
     let spelling = splitCommand[1];
     let serverWide = splitCommand.indexOf('-s') !== -1;
     let channelId = serverWide ? null : message.channel.id;
-    let outputPostfix = serverWide ? 'on this server' : 'on this channel';
+    let outputPostfix = serverWide ? 'server' : 'channel';
     return this.dbAdapter.getWordCount(spelling, message.channel.guild.id, channelId).then(
       (res) => {
         if (res === null) {
-          message.channel.sendMessage(`Word "${spelling}" has never been spotted ${outputPostfix}...`);
+          message.channel.sendMessage(`Word "${spelling}" has never been spotted on this ${outputPostfix}...`);
         } else {
-          message.channel.sendMessage(`Word "${spelling}" has been spotted ${res.count} times ${outputPostfix}!`);
+          message.channel.sendMessage(`Word "${spelling}" has been spotted ${res.count} times on this ${outputPostfix}!`);
         }
-      });
+      }, (err) => { return err; });
   }
 
   // When the bot arrives online
   handleReady() {
-    console.log("Sabot ready!");
+    console.log('Sabot ready!');
     // Maybe say hello or something
   }
 
   // When a message is posted in a channel
-  handleMessage(message) {
+  handleMessage(message){
     const content = message.content;
     if (message.author.bot === true) {
       return;
     }
-    if (content.startsWith("!word_count")) {
+    this.countMessage(message);
+    if (content.startsWith('!word_count')) {
       this.processWordCountCommand(message);
+    } else if (content.startsWith('!message_count')) {
+      this.processMessageCountCommand(message);
     } else {
       this.processMessage(message);
     }

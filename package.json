@@ -4,7 +4,7 @@
   "description": "A bot used to obtain statistics about the interactions on a Discord server",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint *.js",
+    "lint": "eslint './src/**/*.js' './test/**/*.js'",
     "test": "mocha --recursive",
     "test:watch": "mocha --recursive --watch"
   },

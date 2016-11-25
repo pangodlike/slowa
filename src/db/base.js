@@ -4,15 +4,19 @@ class BaseDBAdapter {
   }
 
   connect() {
-    console.error('The connect method should be defined by your DB adapter. DO NOT use BaseDBAdapter!');
+    throw new TypeError('The connect method should be overriden by your DB adapter.');
   }
 
   getWordCount(spelling, guildId, channelId = null) {
-    console.error('The getWordCount method should be defined by your DB adapter. DO NOT use BaseDBAdapter!');
+    throw new TypeError('The getWordCount method should be overriden by your DB adapter.');
+  }
+
+  incrementMessageCount(guildId, channelId) {
+    throw new TypeError('The getWordCount method should be overriden by your DB adapter.');
   }
 
   incrementWord(guildId, channelId, spelling, count) {
-    console.error('The incrementWord method should be defined by your DB adapter. DO NOT use BaseDBAdapter!');
+    throw new TypeError('The incrementWord method should be overriden by your DB adapter.');
   }
 }
 

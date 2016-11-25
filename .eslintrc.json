@@ -18,9 +18,16 @@
             "unix"
         ],
         "no-console": 0,
+        "no-unused-vars": [
+            "error",
+            {
+                "vars": "all",
+                "args": "none"
+            }
+        ],
         "quotes": [
             "error",
-            "double"
+            "single"
         ],
         "semi": [
             "error",
