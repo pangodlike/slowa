@@ -44,7 +44,7 @@ class Sabot {
 
   processMessageCountCommand(message) {
     let splitCommand = message.content.split(' ');
-    let serverWide = splitCommand.indexOf('-s') !== -1;
+    let serverWide = splitCommand.indexOf('-S') !== -1;
     let channelId = serverWide ? null : message.channel.id;
     let outputPostfix = serverWide ? 'server' : 'channel';
     return this.dbAdapter.getMessageCount(message.channel.guild.id, channelId).then(
@@ -56,7 +56,7 @@ class Sabot {
   processWordCountCommand(message) {
     let splitCommand = message.content.split(' ');
     let spelling = splitCommand[1];
-    let serverWide = splitCommand.indexOf('-s') !== -1;
+    let serverWide = splitCommand.indexOf('-S') !== -1;
     let channelId = serverWide ? null : message.channel.id;
     let outputPostfix = serverWide ? 'server' : 'channel';
     return this.dbAdapter.getWordCount(spelling, message.channel.guild.id, channelId).then(

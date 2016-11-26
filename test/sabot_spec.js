@@ -193,7 +193,7 @@ describe('Sabot', function() {
 
     it('should properly output server-wide message count', function() {
       dbAdapter.getMessageCount.returns(Promise.resolve(42));
-      let message = makeMessage('!message_count -s');
+      let message = makeMessage('!message_count -S');
       return sabot.processMessageCountCommand(message).then(() => {
         assert(message.channel.sendMessage.calledOnce);
         assert(message.channel.sendMessage.calledWith('42 messages have been sent on this server!'));
@@ -218,7 +218,7 @@ describe('Sabot', function() {
 
     it('should properly handle existing words server-wide', function() {
       dbAdapter.getWordCount.returns(Promise.resolve({count: 42}));
-      let message = makeMessage('!word_count some_word -s');
+      let message = makeMessage('!word_count some_word -S');
       return sabot.processWordCountCommand(message).then(() => {
         assert(message.channel.sendMessage.calledOnce);
         assert(message.channel.sendMessage.calledWith('Word "some_word" has been spotted 42 times on this server!'));
@@ -236,7 +236,7 @@ describe('Sabot', function() {
 
     it('should properly handle non existing words server-wide', function() {
       dbAdapter.getWordCount.returns(Promise.resolve(null));
-      let message = makeMessage('!word_count some_word -s');
+      let message = makeMessage('!word_count some_word -S');
       return sabot.processWordCountCommand(message).then(() => {
         assert(message.channel.sendMessage.calledOnce);
         assert(message.channel.sendMessage.calledWith('Word "some_word" has never been spotted on this server...'));
