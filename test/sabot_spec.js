@@ -117,6 +117,15 @@ describe('Sabot', function() {
       assert(processMessageCountCommandStub.calledOnce);
     });
 
+    it('should react to !popular_words command', function() {
+      let processPopularWordsCommandStub = sinon.stub();
+      sabot.processPopularWordsCommand = processPopularWordsCommandStub;
+      let message = makeMessage('!popular_words');
+      sabot.handleMessage(message);
+      assert(processPopularWordsCommandStub.calledWith(message));
+      assert(processPopularWordsCommandStub.calledOnce);
+    });
+
     it('should react to !word_count command', function() {
       let processWordCountCommandStub = sinon.stub();
       sabot.processWordCountCommand = processWordCountCommandStub;
@@ -240,6 +249,45 @@ describe('Sabot', function() {
       return sabot.processWordCountCommand(message).then(() => {
         assert(message.channel.sendMessage.calledOnce);
         assert(message.channel.sendMessage.calledWith('Word "some_word" has never been spotted on this server...'));
+      });
+    });
+  });
+
+  describe('processPopularWordsCommand()', function() {
+    beforeEach(function() {
+      setupMocks();
+      dbAdapter.getPopularWords = sinon.stub();
+    });
+
+    it('should properly output popular words', function() {
+      dbAdapter.getPopularWords.returns(Promise.resolve([
+        {spelling: 'eh', count: 4},
+        {spelling: 'ah', count: 3},
+        {spelling: 'oh', count: 2},
+      ]));
+      let message = makeMessage('!popular_words');
+      return sabot.processPopularWordsCommand(message).then(() => {
+        assert(message.channel.sendMessage.calledOnce);
+        assert(message.channel.sendMessage.calledWith('The most popular words on this channel are:'
+          + '\neh: 4 times'
+          + '\nah: 3 times'
+          + '\noh: 2 times'));
+      });
+    });
+
+    it('should properly output server-wide popular words', function() {
+      dbAdapter.getPopularWords.returns(Promise.resolve([
+        {spelling: 'eh', count: 4},
+        {spelling: 'ah', count: 3},
+        {spelling: 'oh', count: 2},
+      ]));
+      let message = makeMessage('!popular_words -S');
+      return sabot.processPopularWordsCommand(message).then(() => {
+        assert(message.channel.sendMessage.calledOnce);
+        assert(message.channel.sendMessage.calledWith('The most popular words on this server are:'
+          + '\neh: 4 times'
+          + '\nah: 3 times'
+          + '\noh: 2 times'));
       });
     });
   });

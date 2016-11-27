@@ -11,6 +11,7 @@ Sabot is a Node.js bot used to obtain anonymous statistics about the interaction
 ### Commands
 
 * ```!message_count [-S]``` Displays the amount of messages that have been sent.
+* ```!popular_words [-S]``` Displays the 10 most popular words that have been sent.
 * ```!word_count <word> [-S]``` Displays the amount of times a *word* has been sent.
 
 When the ```-S``` option is present, statistics for the whole server will be outputed instead of statistics for the current channel.

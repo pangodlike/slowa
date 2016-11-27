@@ -51,6 +51,14 @@ class MongoDBAdapter extends base {
       (err) => {});
   }
 
+  getPopularWords(guildId, channelId = null, count = 1) {
+    let findParams = { guild_id: guildId };
+    if (channelId !== null) {
+      findParams.channel_id = channelId;
+    }
+    return Word.find(findParams).limit(count).sort({count: -1}).exec();
+  }
+
   incrementMessageCount(guildId, channelId) {
     Channel.findOneAndUpdate(
       { guild_id: guildId, id: channelId },

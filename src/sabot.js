@@ -53,6 +53,21 @@ class Sabot {
       }, (err) => { return err; });
   }
 
+  processPopularWordsCommand(message) {
+    let splitCommand = message.content.split(' ');
+    let serverWide = splitCommand.indexOf('-S') !== -1;
+    let channelId = serverWide ? null : message.channel.id;
+    let outputPostfix = serverWide ? 'server' : 'channel';
+    return this.dbAdapter.getPopularWords(message.channel.guild.id, channelId, 10).then(
+      (res) => {
+        let output = `The most popular words on this ${outputPostfix} are:`;
+        for (let word of res) {
+          output += `\n${word.spelling}: ${word.count} times`
+        }
+        message.channel.sendMessage(output);
+      }, (err) => { return err; });
+  }
+
   processWordCountCommand(message) {
     let splitCommand = message.content.split(' ');
     let spelling = splitCommand[1];
@@ -84,6 +99,8 @@ class Sabot {
     this.countMessage(message);
     if (content.startsWith('!word_count')) {
       this.processWordCountCommand(message);
+    } else if (content.startsWith('!popular_words')) {
+      this.processPopularWordsCommand(message);
     } else if (content.startsWith('!message_count')) {
       this.processMessageCountCommand(message);
     } else {
