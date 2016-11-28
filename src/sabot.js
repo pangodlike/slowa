@@ -1,6 +1,6 @@
 const discord = require('discord.js');
-const englishStopWords = require('stopWords').english;
-const frenchStopWords = require('stopWords').french;
+const englishStopWords = require('stopwords').english;
+const frenchStopWords = require('stopwords').french;
 
 class Sabot {
   constructor(dbAdapter) {
