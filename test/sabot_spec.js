@@ -48,6 +48,7 @@ describe('Sabot', function() {
 
     it('should keep reference to dbAdapter', function() {
       assert(sabot.dbAdapter.hasOwnProperty('connect'));
+      assert(sabot.stopWords.length > 0);
     });
   });
 

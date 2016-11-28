@@ -12,7 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "discord.js": "^10.0.1",
-    "mongoose": "^4.6.5"
+    "mongoose": "^4.6.5",
+    "stopwords": "huned/node-stopwords"
   },
   "devDependencies": {
     "chai": "^3.5.0",

@@ -1,8 +1,11 @@
 const discord = require('discord.js');
+const englishStopWords = require('stopWords').english;
+const frenchStopWords = require('stopWords').french;
 
 class Sabot {
   constructor(dbAdapter) {
     this.dbAdapter = dbAdapter;
+    this.stopWords = englishStopWords.concat(frenchStopWords);
   }
 
   countMessage(message) {
@@ -58,7 +61,7 @@ class Sabot {
     let serverWide = splitCommand.indexOf('-S') !== -1;
     let channelId = serverWide ? null : message.channel.id;
     let outputPostfix = serverWide ? 'server' : 'channel';
-    return this.dbAdapter.getPopularWords(message.channel.guild.id, channelId, 10).then(
+    return this.dbAdapter.getPopularWords(message.channel.guild.id, channelId, 10, this.stopWords).then(
       (res) => {
         let output = `The most popular words on this ${outputPostfix} are:`;
         for (let word of res) {
